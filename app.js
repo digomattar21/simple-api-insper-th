@@ -1,22 +1,20 @@
 const express = require('express');
 const { Pool } = require('pg');
-
+require('dotenv').config();
 const app = express();
 const port = 80;
 
-// PostgreSQL connection settings
 const pool = new Pool({
-    user: 'your_username',
-    host: 'localhost',
-    database: 'your_database',
-    password: 'your_password',
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
     port: 5432,
 });
 
-// Function to get data from the database
-async function getDataFromDb() {
+async function getTodosFromDb() {
     try {
-        const result = await pool.query('SELECT * FROM your_table'); // Replace 'your_table' with your table name
+        const result = await pool.query('SELECT * FROM todos');
         return result.rows;
     } catch (err) {
         console.error(err);
@@ -24,17 +22,16 @@ async function getDataFromDb() {
     }
 }
 
-// API endpoint
-app.get('/data', async (req, res) => {
+app.get('/todos', async (req, res) => {
     try {
-        const data = await getDataFromDb();
-        res.json(data);
+        const todos = await getTodosFromDb();
+        res.json(todos);
     } catch (err) {
-        res.status(500).send('Error retrieving data');
+        console.error(err);
+        res.status(500).send('Error retrieving todos');
     }
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
