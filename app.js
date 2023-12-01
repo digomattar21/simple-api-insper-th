@@ -2,7 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 require('dotenv').config();
 const app = express();
-const port = 80;
+const port = 8080;
 
 const pool = new Pool({
     user: process.env.DB_USER,
